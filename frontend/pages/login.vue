@@ -47,17 +47,19 @@ const form = ref({
 const isLoading = ref(false);
 
 async function handleFormSumbmit() {
-  console.log(form.value);
   try {
     isLoading.value = false;
-    useFetch("http://localhost:3333/login", {
+    const { data, error } = useFetch("http://localhost:3333/login", {
       method: "POST",
       body: form.value,
     });
+    const token = await data.value.token;
+    localStorage.setItem("authToken", token);
   } catch (e) {
     console.log(e);
   } finally {
     isLoading.value = false;
+    return navigateTo("/");
   }
 }
 </script>
