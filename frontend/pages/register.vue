@@ -72,6 +72,8 @@ async function handleFormSumbmit() {
     console.log(e);
   } finally {
     isLoading.value = false;
+    const router = useRouter();
+    router.push("/");
   }
 }
 </script>

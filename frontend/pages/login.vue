@@ -30,6 +30,7 @@
         <button
           :disabled="isLoading"
           type="submit"
+          v-on:click="teste"
           class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
         >
           Register
@@ -40,27 +41,22 @@
 </template>
 
 <script setup>
+import axios from "axios";
 const form = ref({
   email: "",
   password: "",
 });
 const isLoading = ref(false);
+const increaseUpdateTracker = inject("increaseUpdateTracker");
 
 async function handleFormSumbmit() {
-  try {
-    isLoading.value = false;
-    const { data, error } = useFetch("http://localhost:3333/login", {
-      method: "POST",
-      body: form.value,
-    });
-    const token = await data.value.token;
-    localStorage.setItem("authToken", token);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    isLoading.value = false;
-    return navigateTo("/");
-  }
+  isLoading.value = false;
+  axios.post("http://localhost:3333/login", form.value).then((response) => {
+    localStorage.setItem("sessionId", response.data.token);
+    increaseUpdateTracker();
+    const router = useRouter();
+    router.push("/");
+  });
 }
 </script>
 
